@@ -577,6 +577,13 @@ window.adminLogin = async function() {
 
 window.adminLogout = async function() {
   await signOut(auth);
+  // Vider les champs login
+  const emailEl = document.getElementById('admin-email');
+  const passEl  = document.getElementById('admin-password');
+  const errEl   = document.getElementById('login-error');
+  if (emailEl) emailEl.value = '';
+  if (passEl)  passEl.value  = '';
+  if (errEl)   { errEl.textContent = ''; errEl.style.display = 'none'; }
 };
 
 function showError(msg) {
