@@ -1710,6 +1710,15 @@ window.doLogin = async function() {
 
 window.doLogout = async function() {
   await signOut(auth);
+  // Vider tous les champs auth
+  ['login-email','login-password','reg-name','reg-email',
+   'reg-password','forgot-email'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  // Vider le dashboard
+  const dashEl = document.getElementById('my-company-card');
+  if (dashEl) dashEl.innerHTML = '';
   showToast(t('toast_logged_out'));
   showPage('home');
 };
