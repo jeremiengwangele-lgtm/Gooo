@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gooo — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #1565C0;
+      --blue-dark: #0D47A1;
+      --blue-light:#E3F2FD;
+      --white:     #FFFFFF;
+      --gray-50:   #F8FAFC;
+      --gray-100:  #F1F5F9;
+      --gray-200:  #E2E8F0;
+      --gray-400:  #94A3B8;
+      --gray-600:  #475569;
+      --gray-800:  #1E293B;
+      --red:       #DC2626;
+      --green:     #16A34A;
+      --orange:    #D97706;
+      --radius:    10px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+      --shadow-md: 0 4px 16px rgba(21,101,192,.12);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-800);
+      min-height: 100vh;
+    }
+
+    .mi {
+      font-family: 'Material Icons Round';
+      font-style: normal;
+      font-weight: normal;
+      font-size: 1.1rem;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+      user-select: none;
+    }
+    .mi-lg { font-size: 1.5rem; }
+
+    /* ── TOAST ── */
+    #toast-container {
+      position: fixed; top: 16px; right: 16px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      background: var(--gray-800); color: var(--white);
+      padding: 11px 16px; border-radius: var(--radius);
+      font-size: .85rem; font-weight: 500;
+      box-shadow: var(--shadow-md); max-width: 300px;
+      animation: slideIn .2s ease;
+    }
+    .toast.success { background: var(--green); }
+    .toast.error   { background: var(--red); }
+    @keyframes slideIn { from { transform:translateX(30px); opacity:0; } to { transform:translateX(0); opacity:1; } }
+
+    /* ── LOADING ── */
+    .loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,.85);
+      z-index: 300; display: none;
+      align-items: center; justify-content: center; flex-direction: column; gap: 12px;
+    }
+    .loading-overlay.active { display: flex; }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--blue-light);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── LOGIN ── */
+    #page-login {
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .login-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 16px; padding: 40px;
+      width: 100%; max-width: 400px;
+      box-shadow: var(--shadow-md);
+    }
+    .login-card h1 {
+      font-size: 1.6rem; font-weight: 800;
+      color: var(--blue); margin-bottom: 4px;
+    }
+    .login-card p {
+      font-size: .85rem; color: var(--gray-400);
+      margin-bottom: 28px;
+    }
+
+    /* ── LAYOUT ADMIN ── */
+    #page-admin { display: none; }
+
+    .admin-header {
+      background: var(--blue);
+      color: var(--white);
+      padding: 0 24px;
+      height: 58px;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .admin-logo {
+      font-size: 1.3rem; font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .admin-logo span {
+      font-size: .75rem; font-weight: 500;
+      opacity: .7; margin-left: 8px;
+    }
+
+    .admin-body {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 6px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .tab-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 16px; border-radius: var(--radius);
+      font-size: .85rem; font-weight: 600;
+      cursor: pointer; border: 1.5px solid var(--gray-200);
+      background: var(--white); color: var(--gray-600);
+      transition: .15s ease;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      border-color: var(--blue); color: var(--blue);
+      background: var(--blue-light);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── STATS CARDS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px; margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .stat-label {
+      font-size: .78rem; font-weight: 600;
+      color: var(--gray-400); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .stat-value {
+      font-size: 2rem; font-weight: 800; color: var(--blue);
+    }
+
+    /* ── TABLE ── */
+    .table-card {
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .table-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    }
+    .table-title {
+      font-size: 1rem; font-weight: 700; color: var(--gray-800);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .search-input {
+      padding: 8px 12px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius); font-size: .85rem;
+      font-family: Inter, sans-serif; outline: none;
+      transition: .15s;
+    }
+    .search-input:focus { border-color: var(--blue); }
+
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      padding: 10px 16px; text-align: left;
+      font-size: .75rem; font-weight: 700;
+      color: var(--gray-400); text-transform: uppercase;
+      letter-spacing: .04em;
+      background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-100);
+    }
+    td {
+      padding: 12px 16px; font-size: .875rem;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-800); vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--gray-50); }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: .72rem; font-weight: 600;
+    }
+    .badge-green  { background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; }
+    .badge-orange { background: #FFF8E1; color: #F57F17; border: 1px solid #FFE082; }
+    .badge-red    { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+
+    /* ── BOUTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: var(--radius);
+      font-size: .82rem; font-weight: 600;
+      cursor: pointer; border: none; transition: .15s;
+      font-family: Inter, sans-serif;
+    }
+    .btn-primary { background: var(--blue); color: var(--white); }
+    .btn-primary:hover { background: var(--blue-dark); }
+    .btn-success { background: var(--green); color: var(--white); }
+    .btn-success:hover { background: #15803D; }
+    .btn-danger  { background: var(--red); color: var(--white); }
+    .btn-danger:hover  { background: #B91C1C; }
+    .btn-ghost   { background: none; color: var(--gray-600); border: 1.5px solid var(--gray-200); }
+    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    /* ── FORM ── */
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block; font-size: .8rem; font-weight: 600;
+      color: var(--gray-600); margin-bottom: 5px;
+    }
+    .form-group input, .form-group select {
+      width: 100%; padding: 9px 12px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius); font-size: .875rem;
+      font-family: Inter, sans-serif; outline: none; transition: .15s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--blue); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.4); z-index: 200;
+      display: none; align-items: center;
+      justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white); border-radius: 14px;
+      padding: 28px; width: 100%; max-width: 440px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+      animation: fadeUp .18s ease;
+    }
+    @keyframes fadeUp { from { transform: translateY(12px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+    .modal h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+    /* ── EMPTY ── */
+    .empty {
+      text-align: center; padding: 48px 20px;
+      color: var(--gray-400); font-size: .875rem;
+    }
+    .empty .mi { font-size: 2.5rem; display: block; margin-bottom: 12px; color: var(--gray-200); }
+
+    @media (max-width: 600px) {
+      td, th { padding: 8px 10px; font-size: .78rem; }
+      .admin-body { padding: 16px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+<div class="loading-overlay" id="loading"><div class="spinner"></div></div>
+
+<!-- ===== LOGIN ===== -->
+<div id="page-login">
+  <div class="login-card">
+    <h1>Gooo</h1>
+    <p>Panneau d'administration</p>
+    <div class="form-group">
+      <label>Adresse e-mail admin</label>
+      <input type="email" id="admin-email" autocomplete="email" />
+    </div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" id="admin-password" autocomplete="current-password" />
+    </div>
+    <div id="login-error" style="font-size:.8rem;color:var(--red);margin-bottom:10px;display:none;"></div>
+    <button class="btn btn-primary" style="width:100%;" onclick="adminLogin()" id="login-btn">
+      <span class="mi">lock_open</span> Se connecter
+    </button>
+  </div>
+</div>
+
+<!-- ===== ADMIN ===== -->
+<div id="page-admin">
+  <div class="admin-header">
+    <div class="admin-logo">Gooo <span>Administration</span></div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span id="admin-email-display" style="font-size:.8rem;opacity:.8;"></span>
+      <button class="btn" style="background:rgba(255,255,255,.15);color:white;font-size:.8rem;" onclick="adminLogout()">
+        <span class="mi">logout</span> Déconnexion
+      </button>
+    </div>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('overview')" id="tab-overview">
+        <span class="mi">dashboard</span> Vue d'ensemble
+      </button>
+      <button class="tab-btn" onclick="switchTab('companies')" id="tab-companies">
+        <span class="mi">store</span> Entreprises
+      </button>
+      <button class="tab-btn" onclick="switchTab('pending')" id="tab-pending">
+        <span class="mi">schedule</span> En attente
+        <span id="pending-count" style="background:var(--orange);color:white;border-radius:10px;padding:1px 7px;font-size:.7rem;display:none;"></span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('users')" id="tab-users">
+        <span class="mi">group</span> Utilisateurs
+      </button>
+    </div>
+
+    <!-- Tab: Vue d'ensemble -->
+    <div class="tab-content active" id="content-overview">
+      <div class="stats-grid" id="overview-stats">
+        <div class="stat-card">
+          <div class="stat-label"><span class="mi">store</span> Entreprises</div>
+          <div class="stat-value" id="stat-total">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="mi">verified</span> Vérifiées</div>
+          <div class="stat-value" id="stat-verified" style="color:var(--green);">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="mi">schedule</span> En attente</div>
+          <div class="stat-value" id="stat-pending" style="color:var(--orange);">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="mi">group</span> Utilisateurs</div>
+          <div class="stat-value" id="stat-users">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="mi">star</span> Avis total</div>
+          <div class="stat-value" id="stat-reviews">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="mi">visibility</span> Vues total</div>
+          <div class="stat-value" id="stat-views">—</div>
+        </div>
+      </div>
+
+      <!-- Dernières entreprises -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title"><span class="mi">store</span> Dernières entreprises</div>
+        </div>
+        <div id="recent-companies-list"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Toutes les entreprises -->
+    <div class="tab-content" id="content-companies">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title"><span class="mi">store</span> Toutes les entreprises</div>
+          <input type="text" class="search-input" placeholder="Rechercher..." id="search-companies" oninput="filterCompanies()" />
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Entreprise</th>
+                <th>Catégorie</th>
+                <th>Ville</th>
+                <th>Note</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="companies-tbody"></tbody>
+          </table>
+        </div>
+        <div id="companies-empty" class="empty" style="display:none;">
+          <span class="mi">store</span>
+          Aucune entreprise trouvée.
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: En attente de validation -->
+    <div class="tab-content" id="content-pending">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title"><span class="mi">schedule</span> En attente de validation</div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Entreprise</th>
+                <th>Catégorie</th>
+                <th>Ville</th>
+                <th>Téléphone</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pending-tbody"></tbody>
+          </table>
+        </div>
+        <div id="pending-empty" class="empty" style="display:none;">
+          <span class="mi">check_circle</span>
+          Aucune entreprise en attente.
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Utilisateurs -->
+    <div class="tab-content" id="content-users">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title"><span class="mi">group</span> Utilisateurs inscrits</div>
+          <input type="text" class="search-input" placeholder="Rechercher..." id="search-users" oninput="filterUsers()" />
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>E-mail</th>
+                <th>Entreprise</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+        <div id="users-empty" class="empty" style="display:none;">
+          <span class="mi">group</span>
+          Aucun utilisateur trouvé.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal: Confirmation suppression -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal">
+    <h3 id="modal-confirm-title">Confirmer la suppression</h3>
+    <p id="modal-confirm-msg" style="font-size:.875rem;color:var(--gray-600);"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-danger" onclick="confirmAction()" id="modal-confirm-btn">
+        <span class="mi">delete</span> Supprimer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Bloquer utilisateur -->
+<div class="modal-overlay" id="modal-block">
+  <div class="modal">
+    <h3>Bloquer l'utilisateur</h3>
+    <p style="font-size:.875rem;color:var(--gray-600);margin-bottom:8px;">
+      Cela supprimera aussi son entreprise. Cette action est irréversible.
+    </p>
+    <p id="block-user-email" style="font-size:.875rem;font-weight:600;color:var(--red);"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-danger" onclick="confirmBlock()">
+        <span class="mi">block</span> Bloquer
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, getDocs, updateDoc,
+         deleteDoc, query, orderBy, where, limit, getDoc, getCountFromServer }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* ── Config Firebase ── */
+const app  = initializeApp({
+  apiKey: "AIzaSyC6VMfybSwO6Tctfy64htzLm606SoydxyI",
+  authDomain: "gooo-d9496.firebaseapp.com",
+  projectId: "gooo-d9496",
+  storageBucket: "gooo-d9496.firebasestorage.app",
+  messagingSenderId: "881863135250",
+  appId: "1:881863135250:web:c9fa59434fc919b1d748cb"
+});
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+/* ── Admin emails autorisés ── */
+const ADMIN_EMAILS = ['jeremiengwangele@gmail.com'];
+
+/* ── State ── */
+let allCompanies = [];
+let allUsers     = [];
+let pendingAction = null;
+let blockTarget   = null;
+
+/* ── Utils ── */
+function showToast(msg, type='') {
+  const c  = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+function showLoading(v) {
+  document.getElementById('loading').classList.toggle('active', v);
+}
+function sanitize(str) {
+  return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── Auth ── */
+onAuthStateChanged(auth, user => {
+  if (user && ADMIN_EMAILS.includes(user.email)) {
+    document.getElementById('page-login').style.display = 'none';
+    document.getElementById('page-admin').style.display = 'block';
+    document.getElementById('admin-email-display').textContent = user.email;
+    loadAll();
+  } else if (user) {
+    signOut(auth);
+    showError('Accès refusé. Compte non administrateur.');
+  } else {
+    document.getElementById('page-login').style.display = 'flex';
+    document.getElementById('page-admin').style.display = 'none';
+  }
+});
+
+window.adminLogin = async function() {
+  const email = document.getElementById('admin-email').value.trim();
+  const pass  = document.getElementById('admin-password').value;
+  if (!email || !pass) { showError('Remplissez tous les champs.'); return; }
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  showLoading(true);
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    showError('E-mail ou mot de passe incorrect.');
+  } finally { showLoading(false); btn.disabled = false; }
+};
+
+window.adminLogout = async function() {
+  await signOut(auth);
+};
+
+function showError(msg) {
+  const el = document.getElementById('login-error');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+}
+
+/* ── Tabs ── */
+window.switchTab = function(tab) {
+  ['overview','companies','pending','users'].forEach(t => {
+    document.getElementById('content-' + t).classList.remove('active');
+    document.getElementById('tab-' + t).classList.remove('active');
+  });
+  document.getElementById('content-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+};
+
+/* ── Charger toutes les données ── */
+async function loadAll() {
+  showLoading(true);
+  try {
+    await Promise.all([loadCompanies(), loadUsers()]);
+    renderOverview();
+  } catch(e) {
+    showToast('Erreur de chargement: ' + e.message, 'error');
+  } finally { showLoading(false); }
+}
+
+async function loadCompanies() {
+  const snap   = await getDocs(query(collection(db,'companies'), orderBy('createdAt','desc')));
+  allCompanies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderCompanies();
+  renderPending();
+}
+
+async function loadUsers() {
+  const snap = await getDocs(collection(db, 'users'));
+  // Firestore ne donne pas accès à Auth users depuis le client
+  // On reconstruit depuis les entreprises (ownerId + ownerEmail)
+  const map = new Map();
+  allCompanies.forEach(c => {
+    if (c.ownerId && !map.has(c.ownerId)) {
+      map.set(c.ownerId, {
+        uid: c.ownerId,
+        email: c.ownerEmail || '—',
+        name: '—',
+        company: c.name,
+        companyId: c.id,
+        validated: c.validated
+      });
+    }
+  });
+  allUsers = Array.from(map.values());
+  renderUsers();
+}
+
+/* ── Vue d'ensemble ── */
+function renderOverview() {
+  const total    = allCompanies.length;
+  const verified = allCompanies.filter(c => c.validated).length;
+  const pending  = allCompanies.filter(c => !c.validated).length;
+  const users    = allUsers.length;
+  const views    = allCompanies.reduce((s,c) => s + (c.stats?.views||0), 0);
+  const reviews  = allCompanies.reduce((s,c) => s + (c.ratingCount||0), 0);
+
+  document.getElementById('stat-total').textContent    = total;
+  document.getElementById('stat-verified').textContent = verified;
+  document.getElementById('stat-pending').textContent  = pending;
+  document.getElementById('stat-users').textContent    = users;
+  document.getElementById('stat-views').textContent    = views;
+  document.getElementById('stat-reviews').textContent  = reviews;
+
+  // Badge en attente
+  const badge = document.getElementById('pending-count');
+  if (pending > 0) {
+    badge.textContent = pending;
+    badge.style.display = 'inline-block';
+  }
+
+  // Dernières entreprises (5)
+  const el = document.getElementById('recent-companies-list');
+  const recent = allCompanies.slice(0, 5);
+  if (recent.length === 0) {
+    el.innerHTML = '<div class="empty"><span class="mi">store</span>Aucune entreprise.</div>';
+    return;
+  }
+  el.innerHTML = `<table><thead><tr>
+    <th>Entreprise</th><th>Ville</th><th>Statut</th><th>Actions</th>
+  </tr></thead><tbody>` +
+  recent.map(c => `<tr>
+    <td><strong>${sanitize(c.name)}</strong></td>
+    <td>${sanitize(c.city||'—')}</td>
+    <td>${statusBadge(c.validated)}</td>
+    <td><div class="btn-group">
+      ${!c.validated ? `<button class="btn btn-success" onclick="verifyCompany('${c.id}')"><span class="mi">verified</span> Valider</button>` : ''}
+      <button class="btn btn-danger" onclick="askDeleteCompany('${c.id}','${sanitize(c.name)}')"><span class="mi">delete</span></button>
+    </div></td>
+  </tr>`).join('') + '</tbody></table>';
+}
+
+function statusBadge(validated) {
+  return validated
+    ? '<span class="badge badge-green"><span class="mi" style="font-size:.8rem;">verified</span> Vérifié</span>'
+    : '<span class="badge badge-orange"><span class="mi" style="font-size:.8rem;">schedule</span> En attente</span>';
+}
+
+/* ── Entreprises ── */
+function renderCompanies(list = allCompanies) {
+  const tbody = document.getElementById('companies-tbody');
+  const empty = document.getElementById('companies-empty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = list.map(c => `<tr>
+    <td>
+      <div style="font-weight:600;">${sanitize(c.name)}</div>
+      <div style="font-size:.75rem;color:var(--gray-400);">${c.slug||''}</div>
+    </td>
+    <td>${sanitize(c.category||'—')}</td>
+    <td>${sanitize(c.city||'—')}</td>
+    <td>${c.ratingAvg ? `⭐ ${c.ratingAvg} (${c.ratingCount})` : '—'}</td>
+    <td>${statusBadge(c.validated)}</td>
+    <td><div class="btn-group">
+      ${!c.validated
+        ? `<button class="btn btn-success" onclick="verifyCompany('${c.id}')"><span class="mi">verified</span> Valider</button>`
+        : `<button class="btn btn-ghost" onclick="unverifyCompany('${c.id}')"><span class="mi">remove_moderator</span></button>`}
+      <button class="btn btn-danger" onclick="askDeleteCompany('${c.id}','${sanitize(c.name)}')"><span class="mi">delete</span></button>
+    </div></td>
+  </tr>`).join('');
+}
+
+window.filterCompanies = function() {
+  const q = document.getElementById('search-companies').value.toLowerCase();
+  const filtered = allCompanies.filter(c =>
+    c.name?.toLowerCase().includes(q) ||
+    c.city?.toLowerCase().includes(q) ||
+    c.category?.toLowerCase().includes(q)
+  );
+  renderCompanies(filtered);
+};
+
+/* ── En attente ── */
+function renderPending() {
+  const pending = allCompanies.filter(c => !c.validated);
+  const tbody   = document.getElementById('pending-tbody');
+  const empty   = document.getElementById('pending-empty');
+
+  if (pending.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = pending.map(c => `<tr>
+    <td><strong>${sanitize(c.name)}</strong></td>
+    <td>${sanitize(c.category||'—')}</td>
+    <td>${sanitize(c.city||'—')}</td>
+    <td>${sanitize(c.phone||'—')}</td>
+    <td><div class="btn-group">
+      <button class="btn btn-success" onclick="verifyCompany('${c.id}')">
+        <span class="mi">verified</span> Valider
+      </button>
+      <button class="btn btn-danger" onclick="askDeleteCompany('${c.id}','${sanitize(c.name)}')">
+        <span class="mi">delete</span> Supprimer
+      </button>
+    </div></td>
+  </tr>`).join('');
+}
+
+/* ── Utilisateurs ── */
+function renderUsers(list = allUsers) {
+  const tbody = document.getElementById('users-tbody');
+  const empty = document.getElementById('users-empty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = list.map(u => `<tr>
+    <td>${sanitize(u.name)}</td>
+    <td>${sanitize(u.email)}</td>
+    <td>${u.company ? `<strong>${sanitize(u.company)}</strong>` : '<span style="color:var(--gray-400);">—</span>'}</td>
+    <td>${u.validated ? '<span class="badge badge-green">Vérifié</span>' : '<span class="badge badge-orange">En attente</span>'}</td>
+    <td><div class="btn-group">
+      ${u.companyId ? `<button class="btn btn-danger" onclick="askBlockUser('${u.uid}','${sanitize(u.email)}','${u.companyId}')">
+        <span class="mi">block</span> Bloquer
+      </button>` : ''}
+    </div></td>
+  </tr>`).join('');
+}
+
+window.filterUsers = function() {
+  const q = document.getElementById('search-users').value.toLowerCase();
+  const filtered = allUsers.filter(u =>
+    u.email?.toLowerCase().includes(q) ||
+    u.company?.toLowerCase().includes(q)
+  );
+  renderUsers(filtered);
+};
+
+/* ── Actions entreprise ── */
+window.verifyCompany = async function(id) {
+  showLoading(true);
+  try {
+    await updateDoc(doc(db,'companies',id), { validated: true });
+    allCompanies = allCompanies.map(c => c.id === id ? {...c, validated: true} : c);
+    renderOverview(); renderCompanies(); renderPending();
+    showToast('Entreprise validée !', 'success');
+  } catch(e) { showToast(e.message, 'error'); }
+  finally { showLoading(false); }
+};
+
+window.unverifyCompany = async function(id) {
+  showLoading(true);
+  try {
+    await updateDoc(doc(db,'companies',id), { validated: false });
+    allCompanies = allCompanies.map(c => c.id === id ? {...c, validated: false} : c);
+    renderOverview(); renderCompanies(); renderPending();
+    showToast('Vérification retirée.', 'success');
+  } catch(e) { showToast(e.message, 'error'); }
+  finally { showLoading(false); }
+};
+
+window.askDeleteCompany = function(id, name) {
+  pendingAction = async () => {
+    showLoading(true);
+    try {
+      await deleteDoc(doc(db,'companies',id));
+      allCompanies = allCompanies.filter(c => c.id !== id);
+      renderOverview(); renderCompanies(); renderPending(); loadUsers();
+      showToast('Entreprise supprimée.', 'success');
+    } catch(e) { showToast(e.message, 'error'); }
+    finally { showLoading(false); }
+  };
+  document.getElementById('modal-confirm-title').textContent = 'Supprimer l\'entreprise';
+  document.getElementById('modal-confirm-msg').textContent   = `Supprimer "${name}" ? Cette action est irréversible.`;
+  document.getElementById('modal-confirm').classList.add('open');
+};
+
+window.confirmAction = async function() {
+  closeModal();
+  if (pendingAction) { await pendingAction(); pendingAction = null; }
+};
+
+/* ── Bloquer utilisateur ── */
+window.askBlockUser = function(uid, email, companyId) {
+  blockTarget = { uid, email, companyId };
+  document.getElementById('block-user-email').textContent = email;
+  document.getElementById('modal-block').classList.add('open');
+};
+
+window.confirmBlock = async function() {
+  closeModal();
+  if (!blockTarget) return;
+  showLoading(true);
+  try {
+    if (blockTarget.companyId) {
+      await deleteDoc(doc(db,'companies', blockTarget.companyId));
+    }
+    allCompanies = allCompanies.filter(c => c.ownerId !== blockTarget.uid);
+    allUsers     = allUsers.filter(u => u.uid !== blockTarget.uid);
+    renderOverview(); renderCompanies(); renderPending(); renderUsers();
+    showToast('Utilisateur bloqué et entreprise supprimée.', 'success');
+    blockTarget = null;
+  } catch(e) { showToast(e.message, 'error'); }
+  finally { showLoading(false); }
+};
+
+/* ── Modal ── */
+window.closeModal = function() {
+  document.getElementById('modal-confirm').classList.remove('open');
+  document.getElementById('modal-block').classList.remove('open');
+};
+</script>
+</body>
+</html>
