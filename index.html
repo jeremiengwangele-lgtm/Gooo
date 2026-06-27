@@ -765,7 +765,8 @@
       border-radius: var(--radius); padding: 20px 24px; margin-bottom: 16px;
     }
     .stars-input { display: flex; gap: 6px; margin-bottom: 14px; }
-    .stars-input .star { font-size: 1.8rem; font-family: 'Material Icons Round'; }
+    .stars-input .star { font-size: 1.8rem; font-family: inherit; cursor: pointer; }
+    .star { font-style: normal; }
 
     /* ========== MODAL ========== */
     .modal-overlay {
@@ -1255,11 +1256,11 @@
       <div class="review-form-card" id="review-form-card">
         <div style="font-size:.95rem;font-weight:700;color:var(--blue-dark);margin-bottom:14px;" data-i18n="review_add_title">Laisser un avis</div>
         <div class="stars-input" id="stars-input">
-          <span class="star mi" data-v="1" onclick="setStars(1)">star_border</span>
-          <span class="star mi" data-v="2" onclick="setStars(2)">star_border</span>
-          <span class="star mi" data-v="3" onclick="setStars(3)">star_border</span>
-          <span class="star mi" data-v="4" onclick="setStars(4)">star_border</span>
-          <span class="star mi" data-v="5" onclick="setStars(5)">star_border</span>
+          <span class="star" data-v="1" onclick="setStars(1)">☆</span>
+          <span class="star" data-v="2" onclick="setStars(2)">☆</span>
+          <span class="star" data-v="3" onclick="setStars(3)">☆</span>
+          <span class="star" data-v="4" onclick="setStars(4)">☆</span>
+          <span class="star" data-v="5" onclick="setStars(5)">☆</span>
         </div>
         <div class="form-group" style="margin-bottom:10px;">
           <input type="text" id="review-name" maxlength="50"
@@ -1272,8 +1273,8 @@
             placeholder="Votre commentaire..." data-i18n-placeholder="review_comment_placeholder"></textarea>
         </div>
         <div id="review-error" style="font-size:.78rem;color:var(--red);margin-bottom:8px;display:none;"></div>
-        <button class="btn btn-primary" onclick="submitReview()" id="review-submit-btn">
-          <span class="mi">send</span> <span data-i18n="review_submit">Publier</span>
+        <button class="btn btn-primary" onclick="submitReview()" id="review-submit-btn" style="width:100%;">
+          <span data-i18n="review_submit">Publier</span>
         </button>
       </div>
       <div id="reviews-list"></div>
@@ -2118,8 +2119,8 @@ window.showProfile = async function(d) {
   // Réinitialiser le formulaire avis
   currentStars = 0;
   document.querySelectorAll('#stars-input .star').forEach(s => {
-    s.textContent = 'star_border';
-    s.style.color = 'var(--gray-200)';
+    s.textContent = '☆';
+    s.style.color = 'var(--gray-400)';
   });
   const nEl = document.getElementById('review-name');
   const cEl = document.getElementById('review-comment');
@@ -2140,11 +2141,11 @@ window.showProfile = async function(d) {
       formCard.innerHTML = `
         <div style="font-size:.95rem;font-weight:700;color:var(--blue-dark);margin-bottom:14px;">${t('review_add_title')}</div>
         <div class="stars-input" id="stars-input">
-          <span class="star mi" data-v="1" onclick="setStars(1)">star_border</span>
-          <span class="star mi" data-v="2" onclick="setStars(2)">star_border</span>
-          <span class="star mi" data-v="3" onclick="setStars(3)">star_border</span>
-          <span class="star mi" data-v="4" onclick="setStars(4)">star_border</span>
-          <span class="star mi" data-v="5" onclick="setStars(5)">star_border</span>
+          <span class="star" data-v="1" onclick="setStars(1)">☆</span>
+          <span class="star" data-v="2" onclick="setStars(2)">☆</span>
+          <span class="star" data-v="3" onclick="setStars(3)">☆</span>
+          <span class="star" data-v="4" onclick="setStars(4)">☆</span>
+          <span class="star" data-v="5" onclick="setStars(5)">☆</span>
         </div>
         <div class="form-group" style="margin-bottom:10px;">
           <input type="text" id="review-name" maxlength="50"
@@ -2317,8 +2318,8 @@ function sanitizeDisplay(str) {
 window.setStars = function(n) {
   currentStars = n;
   document.querySelectorAll('#stars-input .star').forEach((s, i) => {
-    s.textContent  = i < n ? 'star' : 'star_border';
-    s.style.color  = i < n ? '#F59E0B' : 'var(--gray-200)';
+    s.textContent = i < n ? '★' : '☆';
+    s.style.color = i < n ? '#F59E0B' : 'var(--gray-400)';
   });
 };
 
@@ -2327,9 +2328,9 @@ function starsHTML(rating) {
   const half = rating - full >= 0.5;
   let html = '';
   for (let i = 1; i <= 5; i++) {
-    if (i <= full)                 html += `<span class="mi star filled" style="color:#F59E0B;font-size:.95rem;cursor:default;">star</span>`;
-    else if (i === full+1 && half) html += `<span class="mi star filled" style="color:#F59E0B;font-size:.95rem;cursor:default;">star_half</span>`;
-    else                           html += `<span class="mi star" style="color:var(--gray-200);font-size:.95rem;cursor:default;">star_border</span>`;
+    if (i <= full)                 html += `<span style="color:#F59E0B;font-size:1rem;">★</span>`;
+    else if (i === full+1 && half) html += `<span style="color:#F59E0B;font-size:1rem;">⯨</span>`;
+    else                           html += `<span style="color:var(--gray-300);font-size:1rem;">☆</span>`;
   }
   return html;
 }
@@ -2419,12 +2420,12 @@ window.submitReview = async function() {
     showToast(t('review_done'), 'success');
     const formCard = document.getElementById('review-form-card');
     if (formCard) formCard.innerHTML = `<div style="font-size:.875rem;color:var(--green);display:flex;align-items:center;gap:8px;">
-      <span class="mi">check_circle</span> ${t('review_done')}</div>`;
+      ✓ ${t('review_done')}</div>`;
     currentStars = 0;
     loadRatingSummary(companyId);
     loadReviews(companyId);
   } catch(e) {
-    errEl.textContent = 'Erreur. Réessayez.';
+    errEl.textContent = currentLang === 'pt' ? 'Erro. Tente novamente.' : 'Erreur. Réessayez.';
     errEl.style.display = 'block';
     console.error(e);
   } finally { btn.disabled = false; }
