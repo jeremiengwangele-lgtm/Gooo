@@ -1126,7 +1126,7 @@
       <button class="dash-nav-btn active" onclick="switchTab('my-company')" id="tab-my-company" data-i18n="tab_my_company">Mon entreprise</button>
       <button class="dash-nav-btn" onclick="switchTab('search')" id="tab-search" data-i18n="tab_search">Rechercher</button>
       <button class="dash-nav-btn" onclick="switchTab('settings')" id="tab-settings" data-i18n="tab_settings">Paramètres</button>
-      <button class="dash-nav-btn" onclick="switchTab('stats')" id="tab-stats" data-i18n="tab_stats">Statistiques</button>
+      <button class="dash-nav-btn" onclick="switchTab('stats')" id="tab-stats" data-i18n="tab_stats"><span class="mi">bar_chart</span> Statistiques</button>
     </div>
 
     <!-- Tab: Mon entreprise -->
@@ -1382,13 +1382,189 @@
 </div>
 
 <!-- ===== FOOTER ===== -->
+
+<!-- ===== PAGE: À PROPOS ===== -->
+<div class="page" id="page-about">
+  <div style="max-width:700px;margin:0 auto;padding:48px 20px;">
+    <button class="btn btn-ghost" onclick="goHome()" style="margin-bottom:24px;">
+      <span class="mi">arrow_back</span> <span data-i18n="btn_back">Retour</span>
+    </button>
+    <div class="info-card">
+      <h1 style="font-size:1.6rem;font-weight:800;color:var(--blue);margin-bottom:8px;">Gooo Angola</h1>
+      <p style="font-size:.875rem;color:var(--gray-400);margin-bottom:24px;" data-i18n="footer_about">À propos</p>
+
+      <div style="font-size:.9rem;color:var(--gray-600);line-height:1.8;">
+        <p style="margin-bottom:16px;">
+          <strong style="color:var(--gray-800);">Gooo</strong> é o diretório digital das empresas angolanas.
+          A nossa missão é simples: conectar clientes e empresas em Angola de forma rápida, gratuita e profissional.
+        </p>
+        <p style="margin-bottom:16px;">
+          Em Angola, milhares de empresas não têm presença online. O Gooo resolve esse problema —
+          qualquer empresa pode criar a sua ficha em menos de 5 minutos e ser encontrada por clientes
+          em todo o país, sem precisar de um site próprio nem de conhecimentos técnicos.
+        </p>
+        <p style="margin-bottom:16px;">
+          Para os utilizadores, o Gooo é o lugar certo para encontrar restaurantes, farmácias, garagens,
+          hotéis, bancos e muito mais — com avaliações reais, contactos directos e localização no mapa.
+        </p>
+        <p style="margin-bottom:24px;">
+          Gooo é um projeto angolano, desenvolvido com paixão e dedicação para impulsionar a economia digital de Angola. 🇦🇴
+        </p>
+        <div style="background:var(--blue-light);border-radius:var(--radius);padding:16px 20px;">
+          <div style="font-weight:700;color:var(--blue);margin-bottom:4px;">O nosso slogan</div>
+          <div style="font-style:italic;color:var(--blue-dark);">Gooo – Encontre as melhores empresas de Angola.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: CONTACT ===== -->
+<div class="page" id="page-contact">
+  <div style="max-width:700px;margin:0 auto;padding:48px 20px;">
+    <button class="btn btn-ghost" onclick="goHome()" style="margin-bottom:24px;">
+      <span class="mi">arrow_back</span> <span data-i18n="btn_back">Retour</span>
+    </button>
+    <div class="info-card">
+      <h1 style="font-size:1.6rem;font-weight:800;color:var(--blue);margin-bottom:8px;" data-i18n="footer_contact">Contact</h1>
+      <p style="font-size:.875rem;color:var(--gray-400);margin-bottom:24px;">
+        Tem uma questão, sugestão ou problema ? Fale connosco.
+      </p>
+
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="info-row">
+          <span class="info-label"><span class="mi">email</span> E-mail</span>
+          <span class="info-value">
+            <a href="mailto:jeremiengwangele@gmail.com" style="color:var(--blue);font-weight:600;">
+              jeremiengwangele@gmail.com
+            </a>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><span class="mi">schedule</span> Horário</span>
+          <span class="info-value">Segunda a Sexta, 8h – 18h</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><span class="mi">location_on</span> País</span>
+          <span class="info-value">Angola 🇦🇴</span>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;background:var(--blue-light);border-radius:var(--radius);padding:16px 20px;font-size:.875rem;color:var(--blue-dark);">
+        <span class="mi" style="vertical-align:middle;">info</span>
+        Para reportar uma empresa falsa ou conteúdo inadequado, envie um e-mail com o assunto <strong>"Denúncia Gooo"</strong>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: TERMOS ===== -->
+<div class="page" id="page-terms">
+  <div style="max-width:700px;margin:0 auto;padding:48px 20px;">
+    <button class="btn btn-ghost" onclick="goHome()" style="margin-bottom:24px;">
+      <span class="mi">arrow_back</span> <span data-i18n="btn_back">Retour</span>
+    </button>
+    <div class="info-card">
+      <h1 style="font-size:1.6rem;font-weight:800;color:var(--blue);margin-bottom:4px;" data-i18n="footer_terms">Termos de Responsabilidade</h1>
+      <p style="font-size:.8rem;color:var(--gray-400);margin-bottom:24px;">Última atualização: Janeiro 2025</p>
+
+      <div style="font-size:.875rem;color:var(--gray-600);line-height:1.8;display:flex;flex-direction:column;gap:20px;">
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">1. Aceitação dos termos</div>
+          Ao utilizar o Gooo, concorda com os presentes termos. Se não concordar, não utilize a plataforma.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">2. Cadastro de empresas</div>
+          As empresas são responsáveis pela veracidade das informações que publicam no Gooo.
+          O Gooo não se responsabiliza por informações falsas, desatualizadas ou enganosas fornecidas pelas empresas.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">3. Avaliações e comentários</div>
+          Os utilizadores são responsáveis pelas avaliações que publicam. O Gooo reserva o direito de remover
+          avaliações consideradas falsas, ofensivas ou que violem os presentes termos.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">4. Limitação de responsabilidade</div>
+          O Gooo é uma plataforma de listagem e não garante a qualidade, segurança ou legalidade
+          dos serviços prestados pelas empresas listadas. Qualquer transação entre utilizadores e empresas
+          é da exclusiva responsabilidade das partes envolvidas.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">5. Conteúdo proibido</div>
+          É proibido publicar conteúdo falso, ofensivo, ilegal ou que viole direitos de terceiros.
+          O Gooo pode suspender ou eliminar contas que violem estas regras.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">6. Alterações aos termos</div>
+          O Gooo reserva o direito de atualizar estes termos a qualquer momento. O uso continuado da
+          plataforma após as alterações constitui aceitação dos novos termos.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">7. Contacto</div>
+          Para questões relacionadas com estes termos: <a href="mailto:jeremiengwangele@gmail.com" style="color:var(--blue);font-weight:600;">jeremiengwangele@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: POLÍTICA DE PRIVACIDADE ===== -->
+<div class="page" id="page-privacy">
+  <div style="max-width:700px;margin:0 auto;padding:48px 20px;">
+    <button class="btn btn-ghost" onclick="goHome()" style="margin-bottom:24px;">
+      <span class="mi">arrow_back</span> <span data-i18n="btn_back">Retour</span>
+    </button>
+    <div class="info-card">
+      <h1 style="font-size:1.6rem;font-weight:800;color:var(--blue);margin-bottom:4px;" data-i18n="footer_privacy">Política de Privacidade</h1>
+      <p style="font-size:.8rem;color:var(--gray-400);margin-bottom:24px;">Última atualização: Janeiro 2025</p>
+
+      <div style="font-size:.875rem;color:var(--gray-600);line-height:1.8;display:flex;flex-direction:column;gap:20px;">
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">1. Dados que recolhemos</div>
+          Recolhemos apenas os dados necessários para o funcionamento da plataforma:
+          endereço de e-mail e nome para criar uma conta, e as informações da empresa que publica voluntariamente.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">2. Como usamos os seus dados</div>
+          Os seus dados são utilizados exclusivamente para:
+          autenticar a sua conta, exibir a ficha da sua empresa, e enviar comunicações relacionadas com o Gooo.
+          Nunca vendemos os seus dados a terceiros.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">3. Armazenamento dos dados</div>
+          Os dados são armazenados de forma segura no Google Firebase, com encriptação em trânsito e em repouso,
+          em conformidade com as normas internacionais de segurança.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">4. Cookies e armazenamento local</div>
+          O Gooo utiliza o armazenamento local do navegador (localStorage) apenas para guardar
+          as suas preferências de idioma e evitar avaliações duplicadas. Não utilizamos cookies de rastreamento.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">5. Os seus direitos</div>
+          Tem o direito de aceder, corrigir ou eliminar os seus dados a qualquer momento.
+          Para exercer estes direitos, contacte-nos por e-mail.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">6. Menores de idade</div>
+          O Gooo não é destinado a menores de 13 anos. Não recolhemos intencionalmente dados de menores.
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--gray-800);margin-bottom:6px;">7. Contacto</div>
+          Para questões de privacidade: <a href="mailto:jeremiengwangele@gmail.com" style="color:var(--blue);font-weight:600;">jeremiengwangele@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="footer-inner">
     <div class="footer-links">
-      <a data-i18n="footer_about">À propos</a>
-      <a data-i18n="footer_contact">Contact</a>
-      <a data-i18n="footer_terms">Conditions</a>
-      <a data-i18n="footer_privacy">Politique de confidentialité</a>
+      <a onclick="showPage('about')" style="cursor:pointer;" data-i18n="footer_about">À propos</a>
+      <a onclick="showPage('contact')" style="cursor:pointer;" data-i18n="footer_contact">Contact</a>
+      <a onclick="showPage('terms')" style="cursor:pointer;" data-i18n="footer_terms">Conditions</a>
+      <a onclick="showPage('privacy')" style="cursor:pointer;" data-i18n="footer_privacy">Politique de confidentialité</a>
     </div>
     <div class="footer-copy">© 2025 Gooo Angola</div>
   </div>
@@ -1470,6 +1646,14 @@ const T = {
     err_fill_fields: "Veuillez remplir tous les champs.",
     err_password_short: "Le mot de passe doit contenir au moins 6 caractères.",
     greeting: "Bonjour",
+    tab_stats: "Statistiques",
+    stats_views: "Vues du profil",
+    stats_wa: "Clics WhatsApp",
+    stats_calls: "Appels",
+    stats_copies: "Liens copiés",
+    stats_searches: "Apparitions en recherche",
+    stats_note: "Mises à jour en temps réel.",
+    stats_no_company: "Créez votre entreprise pour voir les statistiques.",
     btn_directions: "Itinéraire",
     review_add_title: "Laisser un avis",
     review_name_placeholder: "Votre nom",
@@ -1525,6 +1709,14 @@ const T = {
     err_fill_fields: "Preencha todos os campos.",
     err_password_short: "A senha deve ter pelo menos 6 caracteres.",
     greeting: "Olá",
+    tab_stats: "Estatísticas",
+    stats_views: "Visualizações do perfil",
+    stats_wa: "Cliques WhatsApp",
+    stats_calls: "Chamadas",
+    stats_copies: "Links copiados",
+    stats_searches: "Aparições na pesquisa",
+    stats_note: "Atualizadas em tempo real.",
+    stats_no_company: "Crie a sua empresa para ver as estatísticas.",
     btn_directions: "Como chegar",
     review_add_title: "Deixar uma avaliação",
     review_name_placeholder: "O seu nome",
@@ -2289,18 +2481,18 @@ async function loadStats() {
     const d     = snap.docs[0].data();
     const stats = d.stats || {};
     const rows  = [
-      { key: 'stats_views',    icon: '👁', val: stats.views    || 0 },
-      { key: 'stats_wa',       icon: '💬', val: stats.wa       || 0 },
-      { key: 'stats_calls',    icon: '📞', val: stats.calls    || 0 },
-      { key: 'stats_copies',   icon: '🔗', val: stats.copies   || 0 },
-      { key: 'stats_searches', icon: '🔍', val: stats.searches || 0 },
+      { key: 'stats_views',    icon: 'visibility',    val: stats.views    || 0 },
+      { key: 'stats_wa',       icon: 'chat',          val: stats.wa       || 0 },
+      { key: 'stats_calls',    icon: 'call',          val: stats.calls    || 0 },
+      { key: 'stats_copies',   icon: 'content_copy',  val: stats.copies   || 0 },
+      { key: 'stats_searches', icon: 'manage_search', val: stats.searches || 0 },
     ];
 
     document.getElementById('stats-content').innerHTML = rows.map(r => `
       <div style="display:flex;align-items:center;justify-content:space-between;
         padding:14px 0;border-bottom:1px solid var(--gray-100);">
         <div style="display:flex;align-items:center;gap:12px;">
-          <span style="font-size:1.3rem;">${r.icon}</span>
+          <span class="mi mi-lg" style="color:var(--blue);">${r.icon}</span>
           <span style="font-size:.9rem;font-weight:500;color:var(--gray-600);">${t(r.key)}</span>
         </div>
         <span style="font-size:1.4rem;font-weight:800;color:var(--blue);">${r.val}</span>
